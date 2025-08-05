@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy Browser</title>
+</head>
+<body>
+  <h2>Open URL via Proxy</h2>
+  <input id="url" placeholder="https://example.com" style="width: 300px" />
+  <br />
+  <input id="host" placeholder="Proxy Host" />
+  <input id="port" placeholder="Proxy Port" />
+  <input id="username" placeholder="Proxy Username" />
+  <input id="password" placeholder="Proxy Password" type="password" />
+  <button id="go">Go</button>
+
+  <hr />
+  <iframe id="result" style="width: 100%; height: 80vh;"></iframe>
+
+  <script>
+    document.getElementById('go').onclick = async () => {
+      const url = document.getElementById('url').value;
+      const host = document.getElementById('host').value;
+      const port = document.getElementById('port').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (!url || !host || !port || !username || !password) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      try {
+        const response = await fetch('/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, host, port, username, password })
+        });
+
+        if (!response.ok) {
+          alert('Failed to fetch page through proxy');
+          return;
+        }
+
+        const contentType = response.headers.get('content-type') || 'text/html';
+        const text = await response.text();
+
+        // Write content to iframe
+        const iframe = document.getElementById('result');
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(text);
+        doc.close();
+
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    };
+  </script>
+</body>
+</html>
