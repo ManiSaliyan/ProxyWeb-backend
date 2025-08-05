@@ -30,7 +30,7 @@
       }
 
       try {
-        const response = await fetch('/proxy', {
+        const response = await fetch('https://proxy-web-git-main-manisaliyans-projects.vercel.app/proxy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url, host, port, username, password })
